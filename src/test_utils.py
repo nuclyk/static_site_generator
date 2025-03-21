@@ -1,5 +1,7 @@
 import unittest
 from inline_markdown import *
+from main import extract_title
+import markdown_to_blocks
 
 
 class TestUtils(unittest.TestCase):
@@ -87,25 +89,14 @@ class TestUtils(unittest.TestCase):
             ],
         )
 
-        def test_markdown_to_blocks(self):
-            md = """
-        This is **bolded** paragraph
+    def test_extract_title(self):
+        header = "# Tolkien Fan Club"
+        result = extract_title(header)
+        self.assertEqual(result, "Tolkien Fan Club")
 
-          This is another paragraph with _italic_ text and `code` here
-                This is the same paragraph on a new line
-
-        - This is a list
-        - with items
-        """
-            blocks = markdown_to_blocks(md)
-            self.assertEqual(
-                blocks,
-                [
-                    "This is **bolded** paragraph",
-                    "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
-                    "- This is a list\n- with items",
-                ],
-            )
+    def test_extract_wrong_title(self):
+        with self.assertRaises(ValueError):
+            extract_title("Hello")
 
 
 if __name__ == "__main__":

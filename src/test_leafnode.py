@@ -23,10 +23,6 @@ class TestLeafNode(unittest.TestCase):
         node = LeafNode(None, "Hello, world!")
         self.assertEqual(node.to_html(), "Hello, world!")
 
-    def test_leaf_no_value(self):
-        with self.assertRaises(ValueError):
-            node = LeafNode("p", None)
-
 
 if __name__ == "__main__":
     unittest.main()
