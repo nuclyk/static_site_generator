@@ -25,7 +25,7 @@ def copy_files(src, dst):
         copy_files(os.path.join(src, path), os.path.join(dst, path))
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     if not os.path.exists(dest_dir_path):
         os.makedirs(dest_dir_path)
 
@@ -37,12 +37,12 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if os.path.isfile(src_path):
             extension = pathlib.Path(dest_path).suffix
             dest_path = dest_path.replace(extension, ".html")
-            generate_page(src_path, template_path, dest_path)
+            generate_page(src_path, template_path, dest_path, basepath)
         else:
-            generate_pages_recursive(src_path, template_path, dest_path)
+            generate_pages_recursive(src_path, template_path, dest_path, basepath)
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     markdown = None
     template = None
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
@@ -58,8 +58,9 @@ def generate_page(from_path, template_path, dest_path):
     html = html_node.to_html()
     title = extract_title(markdown)
     template = template.replace("{{ Title }}", title).replace("{{ Content }}", html)
-
-    # create dir if it doesn't exist
+    template = template.replace('href="/', 'href="' + basepath).replace(
+        'src="/', 'src="' + basepath
+    )
 
     with open(dest_path, "w") as file:
         file.write(template)
